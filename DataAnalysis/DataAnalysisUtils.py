@@ -40,7 +40,7 @@ def ir_magnitude(numpy2d_array):
     for IR in numpy2d_array:
         sub_ir = []
         for pare in IR:
-            sub_ir.append(np.math.sqrt(pare[0] ** 2 + pare[1] ** 2))
+            sub_ir.append(np.math.sqrt(pare[0] ** 2 + pare[1] ** 2)) #calculating the magnitude
         ir_array.append(sub_ir)
 
     ir_array = np.array(ir_array)
@@ -74,5 +74,5 @@ def ir_peak_detection(data_set, dis_filter, min_threshold, max_threshold):
     #     peaks.append((data_set[len(data_set)-1], len(data_set)-1))
 
     peaks = np.array(peaks)
-
     return peaks
+
