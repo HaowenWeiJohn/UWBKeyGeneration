@@ -11,9 +11,6 @@ if __name__ == '__main__':
     hallData = IRFrame(C2_4G_500M_Hall1_TagPath, C2_4G_500M_Hall1_AnchorPath, 11.240928)
     hallData.generate_peak_tables()
 
-    plot_tables(hallData.tag_peak_tables,'ro','tag')
-    plot_tables(hallData.anchor_peak_tables,'yo','anchor')
-    print(hallData.anchor_peak_tables[0])
-
-
-
+    plot_tables(hallData.tag_peak_tables, 'ro', 'tag')
+    plot_tables(hallData.anchor_peak_tables, 'yo', 'anchor')
+    print(pd.DataFrame(hallData.anchor_peak_tables[0], columns=['magnitude', 'ToA', 'real', 'imag']))

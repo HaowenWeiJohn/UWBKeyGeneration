@@ -82,8 +82,8 @@ def ir_normalize_mag_with_toa(all_frames, tof):
 
         mag_frame = np.array(mag_frame)
         timeline = x - ir_first_peak_index(mag_frame, 4000) + tof
-        a = np.vstack((mag_frame, timeline,np.transpose(real_imag_frame)))
-        b = a
+        a = np.vstack((mag_frame, timeline, np.transpose(real_imag_frame)))
+
 
         ir_mag.append(a.tolist())
         # hstack([[d1],[d2]])
