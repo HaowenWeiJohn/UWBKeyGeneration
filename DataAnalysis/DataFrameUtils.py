@@ -53,7 +53,7 @@ def ir_peak_detection(data_set, dis_filter, min_threshold):
             next = frame[0][i + 1]
             if min_threshold < current:
                 if current > previous and current > next:
-                    peaks.append([current, frame[1][i]])
+                    peaks.append(frame[:,i])
 
         peak_tables.append(peaks)
 
@@ -82,7 +82,7 @@ def ir_normalize_mag_with_toa(all_frames, tof):
 
         mag_frame = np.array(mag_frame)
         timeline = x - ir_first_peak_index(mag_frame, 4000) + tof
-        a = np.vstack((mag_frame, timeline))
+        a = np.vstack((mag_frame, timeline,np.transpose(real_imag_frame)))
         b = a
 
         ir_mag.append(a.tolist())
