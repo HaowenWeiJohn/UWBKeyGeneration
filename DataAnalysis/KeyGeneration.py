@@ -1,8 +1,7 @@
-
-
 # Quantization
 import math
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 # create values between range 0 to number of quantization levels
@@ -30,27 +29,26 @@ def binary_key(q, n):
     return key_assignments
 
 
-# Key Generation
 def key_generation(detected_peaks, n):  # as numpy arrays
-    # index of the largest peak as a reference
-    amp_ref = np.where(detected_peaks == np.amax(detected_peaks))
     # Extract time
     toa = detected_peaks[:, 1]
+
+    # index of the largest peak as a reference
+    amp_ref = np.where(detected_peaks == np.amax(detected_peaks))
     # Reference time
     reference_pt = toa[amp_ref[0]]
+
     # calculate time with reference time
     time = []
     for t in toa:
         if t > reference_pt:
             temp = t - reference_pt
             time.append(temp)
-
     time = np.array(time)  # casting from list to numpy array
-    # Phase Calculation
-    fc = 4 * (10 ** 9)
-    phase = fc * time * 1e-09
-    phase = phase % (2 * math.pi)
 
+    fc = 4 * 1e09
+    phase = np.deg2rad(fc * time * 1e-09)
+    phase = phase % (2 * math.pi)
     # Quantization
     q = 2 ** n  # q levels
     step_size = 2 * math.pi / q
@@ -61,7 +59,6 @@ def key_generation(detected_peaks, n):  # as numpy arrays
     levels = []
     for i in range(0, q + 1):
         levels = np.append(levels, step_size * i)
-
     # output are the indices of bins where each phase is residing in
     # quantization level indices
     indices = np.digitize(phase, levels)
@@ -69,6 +66,28 @@ def key_generation(detected_peaks, n):  # as numpy arrays
     # Key generation
     key = []
     for i in indices:
-        key = np.append(key, binary_assignments[i-1])
+        key = np.append(key, binary_assignments[i - 1])
+    key = ''.join(key)
+    return key
 
+
+# key generation methods 2: by comparison with mean delay
+def key_generation2(arr):
+    global ele
+    toa = arr[:, 1]
+    toa_1 = toa[0]
+    m = len(toa)
+    toa_m = toa[m - 1]
+    mean_delay = (toa_m - toa_1) / m - 1
+    key = []
+    rl = []
+    for i in range(0, m-1):
+        if toa[i + 1] > toa[i]:
+            relative_delay = (toa[i + 1] - toa[i])
+            flag = relative_delay - mean_delay
+            if flag > 0 or flag == 0:
+                ele = 1
+            elif flag < 0:
+                ele = 0
+        key.append(ele)
     return key
