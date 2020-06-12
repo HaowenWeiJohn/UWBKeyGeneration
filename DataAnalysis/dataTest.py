@@ -14,3 +14,4 @@ if __name__ == '__main__':
     plot_tables(hallData.tag_peak_tables, 'ro', 'tag')
     plot_tables(hallData.anchor_peak_tables, 'yo', 'anchor')
     print(pd.DataFrame(hallData.anchor_peak_tables[0], columns=['magnitude', 'ToA', 'real', 'imag']))
+    a = 0
