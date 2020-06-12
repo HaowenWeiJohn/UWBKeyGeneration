@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 
 
 class IRFrame:
@@ -8,59 +9,86 @@ class IRFrame:
                  uport=None):
         self.tag_path = tag_path
         self.anchor_path = anchor_path
+
         self.tag_ir_frame = tag_ir_frame
         self.anchor_ir_frame = anchor_ir_frame
+        self.tag_mag_frame = None
+        self.anchor_mag_frame = None
+
         self.uport = uport
         self.secret_key = secret_key
         self.tof = tof
 
         self.tag_anchor_anchor_mag_toa_table = None
 
-        self.tag_peak_table = None
-        self.anchor_peak_table1 = None
-        self.anchor_peak_table2 = None
+        self.tag_peak_tables = None
+        self.anchor_peak_tables = None
 
-        self.first_peak_index = np.empty(3)
         self.read_frame()
 
     def read_frame(self):
         self.tag_ir_frame = ir_readirlogfile(self.tag_path)
         self.anchor_ir_frame = ir_readirlogfile(self.anchor_path)
 
-    def generate_mag_table(self):
-        self.tag_anchor_anchor_mag_toa_table = np.concatenate(
-            (ir_magnitude(self.tag_ir_frame), ir_magnitude(self.anchor_ir_frame)))
 
-    def peak_detection(self):
-        self.tag_peak_table = ir_peak_detection(data_set=self.tag_anchor_anchor_mag_toa_table[0], dis_filter=0,
-                                                min_threshold=6000, max_threshold=1000000)
-        self.first_peak_index[0] = self.tag_peak_table[0][1]
-        self.anchor_peak_table1 = ir_peak_detection(data_set=self.tag_anchor_anchor_mag_toa_table[1], dis_filter=0,
-                                                    min_threshold=6000, max_threshold=1000000)
-        self.first_peak_index[1] = self.anchor_peak_table1[0][1]
-        self.anchor_peak_table2 = ir_peak_detection(data_set=self.tag_anchor_anchor_mag_toa_table[2], dis_filter=0,
-                                                    min_threshold=6000, max_threshold=1000000)
-        self.first_peak_index[2] = self.anchor_peak_table2[0][1]
+    def generate_3d_mag_table(self):
+        self.tag_mag_frame = ir_normalize_mag_with_toa(self.tag_ir_frame, self.tof)
+        self.anchor_mag_frame = ir_normalize_mag_with_toa(self.anchor_ir_frame, self.tof)
 
-    def print_console(self):
-        print(pd.DataFrame(self.tag_peak_table))
-        print(pd.DataFrame(self.anchor_peak_table1))
-        print(pd.DataFrame(self.anchor_peak_table2))
 
-    def normalize_toa(self):
-        self.tag_peak_table[:, 1] = self.tag_peak_table[:, 1] - self.tag_peak_table[0, 1] + self.tof
-
-        self.anchor_peak_table1[:, 1] = self.anchor_peak_table1[:, 1] - self.anchor_peak_table1[0, 1] + self.tof
-        self.anchor_peak_table2[:, 1] = self.anchor_peak_table2[:, 1] - self.anchor_peak_table2[0, 1] + self.tof
+    def generate_peak_tables(self):
+        self.generate_3d_mag_table()
+        self.tag_peak_tables= ir_peak_detection(self.tag_mag_frame, 0, 6000)
+        self.anchor_peak_tables = ir_peak_detection(self.anchor_mag_frame, 0, 6000)
 
 
 
+def ir_peak_detection(data_set, dis_filter, min_threshold):
+    peak_tables = []
+    for frame in data_set:
+        peaks = []
+        for i in range(735, len(frame[0]) - 1):
+            previous = frame[0][i - 1]
+            current = frame[0][i]
+            next = frame[0][i + 1]
+            if min_threshold < current:
+                if current > previous and current > next:
+                    peaks.append([current, frame[1][i]])
+
+        peak_tables.append(peaks)
+
+    peak_tables = np.array(peak_tables)
+
+    return peak_tables
 
 
+def ir_first_peak_index(dataset, min_threshold):
+    for i in range(735, len(dataset) - 1):
+        previous = dataset[i - 1]
+        current = dataset[i]
+        next = dataset[i + 1]
+        if min_threshold < current:
+            if current > previous and current > next:
+                return i
 
 
+def ir_normalize_mag_with_toa(all_frames, tof):
+    x = np.linspace(0, 1015, num=1016)
+    ir_mag = []
+    for real_imag_frame in all_frames:
+        mag_frame = []
+        for pare in real_imag_frame:
+            mag_frame.append(np.math.sqrt(pare[0] ** 2 + pare[1] ** 2))  # calculating the magnitude
 
+        mag_frame = np.array(mag_frame)
+        timeline = x - ir_first_peak_index(mag_frame, 4000) + tof
+        a = np.vstack((mag_frame, timeline))
+        b = a
 
+        ir_mag.append(a.tolist())
+        # hstack([[d1],[d2]])
+    ir_mag = np.array(ir_mag)
+    return ir_mag
 
 
 def ir_readirlogfile(log_file_path):
@@ -88,40 +116,3 @@ def ir_readirlogfile(log_file_path):
     all_pairs = np.array(all_pairs)
 
     return all_pairs
-
-
-def ir_peak_detection(data_set, dis_filter, min_threshold, max_threshold):
-    peaks = []
-    peak_dis_counter = 1 + dis_filter
-
-    for i in range(1, len(data_set) - 1):
-        peak_dis_counter += 1
-        if peak_dis_counter >= dis_filter:
-
-            peak_dis_counter += 1
-            previous = data_set[i - 1]
-            current = data_set[i]
-            next = data_set[i + 1]
-
-            if min_threshold < current < max_threshold:
-
-                if current > previous and current > next:
-                    peaks.append((data_set[i], i))
-
-                    peak_dis_counter = 0
-    peaks = np.array(peaks)
-    return peaks
-
-
-def ir_magnitude(numpy2d_array):
-    ir_array = []
-
-    for IR in numpy2d_array:
-        sub_ir = []
-        for pare in IR:
-            sub_ir.append(np.math.sqrt(pare[0] ** 2 + pare[1] ** 2))  # calculating the magnitude
-        ir_array.append(sub_ir)
-
-    ir_array = np.array(ir_array)
-
-    return ir_array

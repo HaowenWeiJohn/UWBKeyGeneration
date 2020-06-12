@@ -1,5 +1,9 @@
+import re
+
 ## first version: read line by line
-from DataAnalysis.phaseCalculation import *
+import numpy as np
+from matplotlib import pyplot as plt
+
 
 def ir_readirlogfile(log_file_path):
     all_pairs = []
@@ -30,7 +34,6 @@ def ir_readirlogfile(log_file_path):
     return all_pairs
 
 
-# calculating the magnitude of peaks
 def ir_magnitude(numpy2d_array):
     ir_array = []
 
@@ -45,7 +48,6 @@ def ir_magnitude(numpy2d_array):
     return ir_array
 
 
-# peak detection with 3 columns: magnitude, time, phase
 def ir_peak_detection(data_set, dis_filter, min_threshold, max_threshold):
     # if data_set[0] > data_set[1]:
     #     peaks.append((data_set[0], 0))
@@ -55,6 +57,7 @@ def ir_peak_detection(data_set, dis_filter, min_threshold, max_threshold):
     peak_dis_counter = 1 + dis_filter
 
     for i in range(1, len(data_set) - 1):
+        peak_dis_counter += 1
         if peak_dis_counter >= dis_filter:
 
             peak_dis_counter += 1
@@ -63,18 +66,13 @@ def ir_peak_detection(data_set, dis_filter, min_threshold, max_threshold):
             next = data_set[i + 1]
 
             if min_threshold < current < max_threshold:
-                # detect peaks
+
+
                 if current > previous and current > next:
+
                     peaks.append((data_set[i], i))
+
                     peak_dis_counter = 0
 
-    # if data_set[len(data_set)-1] > data_set[[len(data_set)-2]:
-    #     peaks.append((data_set[len(data_set)-1], len(data_set)-1))
     peaks = np.array(peaks)
-
-    # call the phase calculation function
-    detected_peaks = phase_cal(peaks)
-
-    return detected_peaks
-
-
+    return peaks
