@@ -48,13 +48,13 @@ if __name__ == "__main__":
 
     keyOut1_m1 = key_generation(TagPeaks3, 2)
     keyOut1_m2 = key_generation2(TagPeaks3)
-    print("Key set 1 -- Tag", keyOut1_m2)
+    print("Key set 1 -- Tag", keyOut1_m1)
     keyOut2_m1 = key_generation(AnchorPeaks3, 2)
     keyOut2_m2 = key_generation2(AnchorPeaks3)
-    print("Key set 2 -- Anchor", keyOut2_m2)
+    print("Key set 2 -- Anchor", keyOut2_m1)
     keyOut3_m1 = key_generation(AnchorPeaks3_2,2)
     keyOut3_m2 = key_generation2(AnchorPeaks3_2)
-    print("Key set 3 -- Anchor", keyOut3_m2)
+    print("Key set 3 -- Anchor", keyOut3_m1)
 
     print('')
 

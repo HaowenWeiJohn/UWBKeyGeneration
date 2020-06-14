@@ -72,15 +72,14 @@ def key_generation(detected_peaks, n):  # as numpy arrays
 
 
 # key generation methods 2: by comparison with mean delay
-def key_generation2(arr):
+def key_generation2(peaks):
     global ele
-    toa = arr[:, 1]
+    toa = peaks[:, 1]
     toa_1 = toa[0]
     m = len(toa)
     toa_m = toa[m - 1]
     mean_delay = (toa_m - toa_1) / m - 1
     key = []
-    rl = []
     for i in range(0, m-1):
         if toa[i + 1] > toa[i]:
             relative_delay = (toa[i + 1] - toa[i])

@@ -2,6 +2,10 @@ from DataAnalysis.DataFrameUtils import *
 from DataAnalysis.PlotUtils import *
 from matplotlib import pyplot as plt
 import pandas as pd
+from DataAnalysis.phaseCalculation import *
+from DataAnalysis.KeyGeneration import *
+
+
 
 C2_4G_500M_Hall1_TagPath = 'tag_C2_Hall_1.log'
 
@@ -11,6 +15,20 @@ if __name__ == '__main__':
     hallData = IRFrame(C2_4G_500M_Hall1_TagPath, C2_4G_500M_Hall1_AnchorPath, 11.240928)
     hallData.generate_peak_tables()
 
-    plot_tables(hallData.tag_peak_tables, 'ro', 'tag')
-    plot_tables(hallData.anchor_peak_tables, 'yo', 'anchor')
-    print(pd.DataFrame(hallData.anchor_peak_tables[0], columns=['magnitude', 'ToA', 'real', 'imag']))
+    plot_tables(hallData.tag_peak_tables,'ro','tag')
+    plot_tables(hallData.anchor_peak_tables,'yo','anchor')
+    tag_table = generate_phase_table(hallData.tag_peak_tables[0])
+    anchor_table1 = generate_phase_table(hallData.anchor_peak_tables[0])
+    anchor_table2 = generate_phase_table(hallData.anchor_peak_tables[1])
+
+    print(pd.DataFrame(tag_table, columns=['magnitude','ToA','Real','Imag','phase_toa','phase_RI']))
+    print(pd.DataFrame(anchor_table1, columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase_toa', 'phase_RI']))
+    print(pd.DataFrame(anchor_table2, columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase_toa', 'phase_RI']))
+
+    # time difference
+    key1 = key_generation2(tag_table)
+    key2 = key_generation2(anchor_table1)
+
+    print(key1)
+    print(key2)
+

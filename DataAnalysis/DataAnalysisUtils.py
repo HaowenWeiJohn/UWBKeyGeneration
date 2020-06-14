@@ -4,7 +4,6 @@ import re
 import numpy as np
 from matplotlib import pyplot as plt
 
-
 def ir_readirlogfile(log_file_path):
     all_pairs = []
     with open(log_file_path, "r") as file:
