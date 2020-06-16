@@ -14,7 +14,8 @@ def phase_cal(peaks):
         rad = (item[1] * fc * 1e-09) * math.pi / 180
         # phase mod 2pi
         rad = rad % (2 * math.pi)
-        phase.append(rad)
+        deg = rad * 180 / math.pi
+        phase.append(deg)
     phase = np.array(phase)
     phase = phase.reshape(len(phase), 1)
     # append a new column that is phase
@@ -25,19 +26,28 @@ def phase_cal(peaks):
 
 # calculate phase using arctan
 def phase_cal2(peaks_table):
+    imag = np.array(peaks_table[:, 3])
+    real = np.array(peaks_table[:, 2])
+    imag = imag.reshape(len(imag), 1)
+    real = real.reshape(len(real), 1)
+    # a new array of real and imaginary components
+    phase = np.hstack((real, imag))
+    phase_real_imag = []
 
-    phase = []
-    for item in peaks_table:
-        #arr = []
-        #for element in item:
-        x = item[3]/item[2]
-        phase.append(x)
-    phase = np.arctan(np.array(phase))
-    #phase = np.reshape(len(phase),1)
-    phase = phase.reshape(len(phase), 1)
+    for item in phase:
+        complex = item[0] + item[1] * 1j
+        angle = np.angle(complex,deg=True)
+        print(angle)
+        phase_real_imag.append(angle)
+    angle = (np.array(phase_real_imag))
+    angle = angle.reshape(len(angle), 1)
+    # if angle is negative, add 360.
+    angle = [(x+ 360) if x < 0 else x for x in angle]
     # append a new column that is phase
-    peaks_table = np.append(peaks_table, phase, axis=1)
-    return peaks_table
+    data_table = np.append(peaks_table, angle, axis=1)
+    return data_table
+
+
 
 def generate_phase_table(mag_toa_real_img):
     phase_table_1 = phase_cal(mag_toa_real_img)
