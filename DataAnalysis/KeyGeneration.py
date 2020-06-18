@@ -79,7 +79,7 @@ def key_generation_using_avg_delay(peaks):
     toa_m = toa[m - 1]
     mean_delay = (toa_m - toa_1) / m - 1
     key = []
-    for i in range(0, m-1):
+    for i in range(0, m - 1):
         if toa[i + 1] > toa[i]:
             relative_delay = (toa[i + 1] - toa[i])
             flag = relative_delay - mean_delay
@@ -92,8 +92,8 @@ def key_generation_using_avg_delay(peaks):
     return key
 
 
-def key_generation3_RI_phase(table,n):
-    phase_real_imag = table[:,5] * math.pi / 180
+def key_generation3_RI_phase(table, n, RI_col):
+    phase_real_imag = table[:, RI_col] * math.pi / 180
     # Quantization
     # q levels
     q = 2 ** n
@@ -110,11 +110,12 @@ def key_generation3_RI_phase(table,n):
     # Key generation
     key = []
     for i in indices:
-        key = np.append(key, binary_assignments[i-1])
+        key = np.append(key, binary_assignments[i - 1])
     key = ''.join(key)
     return key
 
-def key_generation4_toa(table,n):
+
+def key_generation4_toa(table, n):
     phase_real_imag = table[:, 1]
     # Quantization
     # q levels
