@@ -29,8 +29,8 @@ if __name__ == '__main__':
     key1 = key_generation3_RI_phase(tag_table, 2, 5)
     key2 = key_generation3_RI_phase(anchor_table1, 2, 5)
 
-    key11 = key_generation4_toa(tag_table, 4)
-    key22 = key_generation4_toa(anchor_table1, 4)
+    key11 = key_generation4_toa(tag_table, 4, 1)
+    key22 = key_generation4_toa(anchor_table1, 4, 1)
 
     print(key11)
     print(key22)

@@ -115,8 +115,8 @@ def key_generation3_RI_phase(table, n, RI_col):
     return key
 
 
-def key_generation4_toa(table, n):
-    phase_real_imag = table[:, 1]
+def key_generation4_toa(table, n, toa_col):
+    toa = table[:, toa_col]
     # Quantization
     # q levels
     q = 2 ** n
@@ -130,7 +130,7 @@ def key_generation4_toa(table, n):
         levels = np.append(levels, step_size * i)
     # output are the indices of bins where each phase is residing in
     # quantization level indices
-    indices = np.digitize(phase_real_imag, levels)
+    indices = np.digitize(toa, levels)
     # Key generation
     key = []
     for i in indices:
