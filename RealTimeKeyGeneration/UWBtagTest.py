@@ -2,6 +2,7 @@ from RealTimeKeyGeneration.DecaUWB_interface import *
 from RealTimeKeyGeneration.secretKeyGeneration import *
 from RealTimeKeyGeneration.Real_Time_Table_Generation import *
 from DataAnalysis.phaseCalculation import *
+from DataAnalysis.KeyGeneration import *
 
 import pandas as pd
 
@@ -24,11 +25,13 @@ if __name__ == "__main__":
             # print(generateKey_ToA_Average_Delay(timeline=tag_timeline, key_length=5))
 
             mag_toa_real_imag_Tag = mag_toa_real_imag_table(tag_frame)
-            mag_toa_real_imag_Tag_angle_Tag = phase_cal2(mag_toa_real_imag_Tag)
+            mag_toa_real_imag_angle_Tag = phase_cal2(mag_toa_real_imag_Tag)
             print("\nTag")
-            print(pd.DataFrame(mag_toa_real_imag_Tag_angle_Tag,
+            print(pd.DataFrame(mag_toa_real_imag_angle_Tag,
                                columns=['magnitude', 'ToA', 'Real', 'Imag', 'real imag phase']))
             print(generateKey_ToA_Average_Delay(mag_toa_real_imag_Tag[:,1],6))
+            print("Phase : "+ key_generation3_RI_phase(mag_toa_real_imag_angle_Tag, 2, 4))
+
 
         anchor_frame = Anchor.generate_frame()
         # print(len(Anchor.data_buffer))
@@ -39,9 +42,10 @@ if __name__ == "__main__":
             # print("anchor")
             # print(generateKey_ToA_Average_Delay(timeline=anchor_timeline, key_length=5))
             mag_toa_real_imag_Anchor = mag_toa_real_imag_table(anchor_frame)
+            print()
             mag_toa_real_imag_angle_Anchor = phase_cal2(mag_toa_real_imag_Anchor)
             print("\nAnchor")
             print(pd.DataFrame(mag_toa_real_imag_angle_Anchor,
                                columns=['magnitude', 'ToA', 'Real', 'Imag', 'real imag phase']))
             print(generateKey_ToA_Average_Delay(mag_toa_real_imag_Anchor[:,1],6))
-            # print(mag_toa_real_imag_Anchor[:, 2])
+            print("phase : " + key_generation3_RI_phase(mag_toa_real_imag_angle_Anchor, 2, 4))

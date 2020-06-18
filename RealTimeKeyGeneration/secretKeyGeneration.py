@@ -34,6 +34,7 @@ def generateKey_ToA_Average_Delay(timeline, key_length):
     if len(timeline)<2:
         return
 
+    timeline = timeline-timeline[0]
     key = []
     if len(timeline) > key_length:
         real_key_size = key_length

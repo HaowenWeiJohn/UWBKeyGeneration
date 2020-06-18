@@ -38,7 +38,7 @@ def mag_toa_real_imag_table(real_imag_pairs):
         real.append(real_imag_pairs[index][0])
         imag.append(real_imag_pairs[index][1])
 
-    mag_toa_real_imag = np.stack((peak, peak_index-peak_index[0], real, imag), axis=1)
+    mag_toa_real_imag = np.stack((peak, peak_index-peak_index[0]+10.5, real, imag), axis=1)
 
     return mag_toa_real_imag
 

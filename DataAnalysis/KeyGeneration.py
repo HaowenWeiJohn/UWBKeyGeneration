@@ -90,8 +90,8 @@ def key_generation2(peaks):
         key.append(ele)
     return key
 
-def key_generation3_RI_phase(table,n):
-    phase_real_imag = table[:,5] * math.pi / 180
+def key_generation3_RI_phase(table,n, RI_angle_column):
+    phase_real_imag = table[:, RI_angle_column] * math.pi / 180
     # Quantization
     # q levels
     q = 2 ** n
