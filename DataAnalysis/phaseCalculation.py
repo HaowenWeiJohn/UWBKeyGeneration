@@ -24,6 +24,7 @@ def phase_cal(peaks):
 
 # calculate phase using arctan
 def phase_cal2(peaks_table):
+
     imag = np.array(peaks_table[:, 3])
     real = np.array(peaks_table[:, 2])
     imag = imag.reshape(len(imag), 1)
