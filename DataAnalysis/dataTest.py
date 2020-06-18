@@ -11,8 +11,13 @@ C2_4G_500M_Hall1_TagPath = 'tag_C2_Hall_1.log'
 
 C2_4G_500M_Hall1_AnchorPath = 'anchor_C2_Hall_1.log'
 
+C5_65G_500M_Room1_TagPath = 'C5-6.5G-500M.1Tag.log'
+C5_65G_500M_Room1_AnchorPath = 'C5-6.5G-500M.1Anchor.log'
+
+
+
 if __name__ == '__main__':
-    hallData = IRFrame(C2_4G_500M_Hall1_TagPath, C2_4G_500M_Hall1_AnchorPath, 11.240928)
+    hallData = IRFrame(C2_4G_500M_Hall1_TagPath, C2_4G_500M_Hall1_AnchorPath, 1.052)
     hallData.generate_peak_tables()
 
     plot_tables(hallData.tag_peak_tables,'ro','tag')
@@ -25,9 +30,9 @@ if __name__ == '__main__':
     print(pd.DataFrame(anchor_table1, columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase_toa', 'phase_RI']))
     print(pd.DataFrame(anchor_table2, columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase_toa', 'phase_RI']))
 
-    # time difference
-    key1 = key_generation2(tag_table)
-    key2 = key_generation2(anchor_table1)
+
+    key1 = key_generation3_RI_phase(tag_table,2)
+    key2 = key_generation3_RI_phase(anchor_table1,2)
 
     print(key1)
     print(key2)

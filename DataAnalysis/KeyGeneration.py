@@ -89,3 +89,25 @@ def key_generation2(peaks):
                 ele = 0
         key.append(ele)
     return key
+
+def key_generation3_RI_phase(table,n):
+    phase_real_imag = table[:,5] * math.pi / 180
+    # Quantization
+    # q levels
+    q = 2 ** n
+    step_size = 2 * math.pi / q
+    # generate binary numbers to be assigned
+    binary_assignments = binary_key(q, n)
+    # Dividing up the quantization levels in step sizes
+    levels = []
+    for i in range(0, q + 1):
+        levels = np.append(levels, step_size * i)
+    # output are the indices of bins where each phase is residing in
+    # quantization level indices
+    indices = np.digitize(phase_real_imag, levels)
+    # Key generation
+    key = []
+    for i in indices:
+        key = np.append(key, binary_assignments[i-1])
+    key = ''.join(key)
+    return key
