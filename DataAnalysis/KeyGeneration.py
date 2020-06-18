@@ -117,10 +117,12 @@ def key_generation3_RI_phase(table, n, RI_col):
 
 def key_generation4_toa(table, n, toa_col):
     toa = table[:, toa_col]
+    toa = toa - toa[0]
+    b = toa[len(toa)-1]/len(toa)
     # Quantization
     # q levels
     q = 2 ** n
-    step_size = 3
+    step_size = b
     # generate binary numbers to be assigned
     binary_assignments = binary_key(q, n)
     # Dividing up the quantization levels in step sizes
