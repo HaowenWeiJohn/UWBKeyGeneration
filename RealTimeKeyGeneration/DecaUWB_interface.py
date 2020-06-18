@@ -27,7 +27,6 @@ class UWBSensorInterface:
         # print(len(self.data_buffer))
         if len(self.data_buffer) > self.frame_size:
             real_imag_pairs = np.reshape(unpack("i" * 130, self.data_buffer[0:self.frame_size]), (-1, 2))
-            print(real_imag_pairs)
             self.data_buffer = self.data_buffer[self.frame_size:]
             return real_imag_pairs
         else:
