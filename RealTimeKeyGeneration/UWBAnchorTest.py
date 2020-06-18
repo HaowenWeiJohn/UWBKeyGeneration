@@ -12,7 +12,7 @@ if __name__ == "__main__":
         if this_frame is not None:
            a = magnitude_frame(this_frame)
            timeline = peak_detection_peak_timeline(a)
-           print(generateKey(timeline  =  timeline, key_length= 5))
+           print(generateKey_ToA_Average_Delay(timeline  =  timeline, key_length= 5))
 
 
 

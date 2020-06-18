@@ -47,7 +47,7 @@ def ir_peak_detection(data_set, min_threshold):
     peak_tables = []
     for frame in data_set:
         peaks = []
-        for i in range(735, len(frame[0]) - 1):
+        for i in range(0, len(frame[0]) - 1):
             previous = frame[0][i - 1]
             current = frame[0][i]
             next = frame[0][i + 1]

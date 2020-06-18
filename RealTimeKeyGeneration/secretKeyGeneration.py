@@ -28,7 +28,7 @@ def peak_detection_peak_timeline(magList, constant=2000):
     return timeline
 
 
-def generateKey(timeline, key_length):
+def generateKey_ToA_Average_Delay(timeline, key_length):
     print(timeline)
 
     if len(timeline)<2:
@@ -48,3 +48,25 @@ def generateKey(timeline, key_length):
             key.append(0)
 
     return np.array(key)
+
+
+
+
+
+
+
+
+# def generateKey_RI_phase(real_imag_pairs):
+#     magList = magnitude_frame(real_imag_pairs=real_imag_pairs)
+#     min_threshold = 2500+0.2*max(magList)
+#     peak_pairs = []
+#     for i in range(1, len(magList) - 1):
+#         previous = magList[i - 1]
+#         current = magList[i]
+#         next = magList[i + 1]
+#         if min_threshold < current:
+#             if current > previous and current > next:
+
+
+
+
