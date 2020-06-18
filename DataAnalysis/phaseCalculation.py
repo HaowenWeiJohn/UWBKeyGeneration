@@ -9,18 +9,16 @@ def phase_cal(peaks):
     phase = []
     # center frequency
     fc = 4 * 1e09
+    wc = 2 * math.pi * fc
     for item in peaks:
         # phase in radians
-        rad = (item[1] * fc * 1e-09) * math.pi / 180
-        # phase mod 2pi
-        rad = rad % (2 * math.pi)
+        rad = (wc * item[1]) % (2 * math.pi)
         deg = rad * 180 / math.pi
         phase.append(deg)
     phase = np.array(phase)
     phase = phase.reshape(len(phase), 1)
     # append a new column that is phase
     peaks = np.append(peaks, phase, axis=1)
-
     return peaks
 
 
@@ -36,8 +34,7 @@ def phase_cal2(peaks_table):
 
     for item in phase:
         complex = item[0] + item[1] * 1j
-        angle = np.angle(complex,deg=True)
-        print(angle)
+        angle = np.angle(complex, deg=True)
         phase_real_imag.append(angle)
     angle = (np.array(phase_real_imag))
     angle = angle.reshape(len(angle), 1)
@@ -46,7 +43,6 @@ def phase_cal2(peaks_table):
     # append a new column that is phase
     data_table = np.append(peaks_table, angle, axis=1)
     return data_table
-
 
 
 def generate_phase_table(mag_toa_real_img):

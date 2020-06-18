@@ -37,7 +37,7 @@ class IRFrame:
 
     def generate_peak_tables(self):
         self.generate_3d_mag_table()
-        self.tag_peak_tables= ir_peak_detection(self.tag_mag_frame,  6000)
+        self.tag_peak_tables= ir_peak_detection(self.tag_mag_frame, 6000)
         self.anchor_peak_tables = ir_peak_detection(self.anchor_mag_frame,  6000)
 
 
