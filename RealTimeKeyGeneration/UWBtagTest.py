@@ -38,7 +38,6 @@ if __name__ == "__main__":
             # anchor_timeline = peak_detection_peak_timeline(b)
             # print("anchor")
             # print(generateKey_ToA_Average_Delay(timeline=anchor_timeline, key_length=5))
-
             mag_toa_real_imag_Anchor = mag_toa_real_imag_table(anchor_frame)
             mag_toa_real_imag_angle_Anchor = phase_cal2(mag_toa_real_imag_Anchor)
             print("\nAnchor")
