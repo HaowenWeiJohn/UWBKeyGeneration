@@ -12,9 +12,6 @@ Tag.connect_virtual_port('COM30')
 Anchor = UWBSensorInterface('Anchor', 520)
 Anchor.connect_virtual_port('COM32')
 
-tag_frame = []
-anchor_frame = []
-
 '''
 csv file format:
         Key file
@@ -28,9 +25,11 @@ amp 1
 '''
 
 keyfile_col = ['anchorKey1', 'tagKey', 'anchorKey2']
-ampfile_col = ['anchorRI1','tagRI','anchorRI2']
+ampfile_col = ['anchorRI1', 'tagRI', 'anchorRI2']
 
 number = 100
+keys = []
+magnitude = []
 
 if __name__ == "__main__":
 
@@ -44,12 +43,10 @@ if __name__ == "__main__":
             print(pd.DataFrame(mag_toa_real_imag_angle_Tag,
                                columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase']))
 
-            key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Tag[:, 1], 3)
+            Tag_key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Tag[:, 1], 3)
 
-
-
-            tag_frame.append(mag_toa_real_imag_angle_Tag)
-
+            keys.append(''.join(map(str, Tag_key)))
+            magnitude.append(mag_toa_real_imag_angle_Tag[0][0])
 
         anchor_frame = Anchor.generate_frame()
         if anchor_frame is not None:
@@ -58,16 +55,27 @@ if __name__ == "__main__":
             print("\nAnchor")
             print(pd.DataFrame(mag_toa_real_imag_angle_Anchor,
                                columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase']))
-            print(generateKey_ToA_Average_Delay(mag_toa_real_imag_Anchor[:, 1], 3))
 
-            anchor_frame = anchor_frame.appedn(mag_toa_real_imag_angle_Anchor)
+            Anchor_key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Anchor[:, 1], 3)
 
-        if len(tag_frame == number) and len(anchor_frame == number*2 + 1):
-            anchor_frame.pop(0)
+            keys.append(''.join(map(str, Anchor_key)))
+            magnitude.append(mag_toa_real_imag_angle_Anchor[0][0])
+
+
+
+        if len(keys) == number and len(keys) == number * 2 + 1:
+            keys.pop(0)
+            magnitude.pop(0)
             break
 
 
 
 
+        keys = np.reshape(keys, (number, 3))
+        magnitude = np.reshape(keys, (number, 3))
 
+        keysFrame = pd.DataFrame(keys, columns=keyfile_col)
+        magnitudeFrame = pd.DataFrame(keys, columns=ampfile_col)
 
+        keysFrame.to_csv('keys.csv')
+        magnitudeFrame.to_csv('mags.csv')
