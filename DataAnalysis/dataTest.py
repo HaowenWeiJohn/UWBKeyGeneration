@@ -13,7 +13,7 @@ C5_65G_500M_Room1_TagPath = 'C5-6.5G-500M.1Tag.log'
 C5_65G_500M_Room1_AnchorPath = 'C5-6.5G-500M.1Anchor.log'
 
 if __name__ == '__main__':
-    hallData = IRFrame(C2_4G_500M_Hall1_TagPath, C2_4G_500M_Hall1_AnchorPath, 1.052)
+    hallData = IRFrame(C2_4G_500M_Hall1_TagPath, C2_4G_500M_Hall1_AnchorPath, 37.507)
     hallData.generate_peak_tables()
 
     plot_tables(hallData.tag_peak_tables, 'ro', 'tag')

@@ -18,6 +18,10 @@ class UWBSensorInterface:
     def connect_virtual_port(self, virtual_port):
         try:
             self.uport = serial.Serial(port=virtual_port, baudrate=self.baud_rate, timeout=0)
+            self.uport.flushOutput()
+
+
+            self.uport.flushInput()
         except:
             print("port is in use or not open")
             return
@@ -29,6 +33,15 @@ class UWBSensorInterface:
             real_imag_pairs = np.reshape(unpack("i" * 130, self.data_buffer[0:self.frame_size]), (-1, 2))
             self.data_buffer = self.data_buffer[self.frame_size:]
             return real_imag_pairs
+        else:
+            return None
+    def generate_distance(self):
+        self.data_buffer += self.uport.read()
+        # print(len(self.data_buffer))
+        if len(self.data_buffer) > self.frame_size:
+            currentDistance = unpack("d", self.data_buffer[0:self.frame_size])
+            self.data_buffer = self.data_buffer[self.frame_size:]
+            return currentDistance
         else:
             return None
 
