@@ -27,7 +27,7 @@ amp 1
 keyfile_col = ['anchorKey1', 'tagKey', 'anchorKey2']
 ampfile_col = ['anchorRI1', 'tagRI', 'anchorRI2']
 
-number = 100
+counter = 100
 keys = []
 magnitude = []
 
@@ -39,43 +39,45 @@ if __name__ == "__main__":
         if tag_frame is not None:
             mag_toa_real_imag_Tag = mag_toa_real_imag_table(tag_frame)
             mag_toa_real_imag_angle_Tag = phase_cal2(mag_toa_real_imag_Tag)
-            print("\nTag")
-            print(pd.DataFrame(mag_toa_real_imag_angle_Tag,
-                               columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase']))
+            if mag_toa_real_imag_angle_Tag[0][0] > 10000:
+                print("Tag")
+                # print(pd.DataFrame(mag_toa_real_imag_angle_Tag,
+                #                    columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase']))
 
-            Tag_key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Tag[:, 1], 3)
+                Tag_key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Tag[:, 1], key_length=4)
+                print(Tag_key)
 
-            keys.append(''.join(map(str, Tag_key)))
-            magnitude.append(mag_toa_real_imag_angle_Tag[0][0])
+                keys.append(''.join(map(str, Tag_key)))
+                magnitude.append(mag_toa_real_imag_angle_Tag[0][0])
 
         anchor_frame = Anchor.generate_frame()
         if anchor_frame is not None:
             mag_toa_real_imag_Anchor = mag_toa_real_imag_table(anchor_frame)
             mag_toa_real_imag_angle_Anchor = phase_cal2(mag_toa_real_imag_Anchor)
-            print("\nAnchor")
-            print(pd.DataFrame(mag_toa_real_imag_angle_Anchor,
-                               columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase']))
+            if mag_toa_real_imag_angle_Anchor[0][0] > 10000:
+                print("Anchor")
+                # print(pd.DataFrame(mag_toa_real_imag_angle_Anchor,
+                #                    columns=['magnitude', 'ToA', 'Real', 'Imag', 'phase']))
 
-            Anchor_key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Anchor[:, 1], 3)
+                Anchor_key = generateKey_ToA_Average_Delay(mag_toa_real_imag_Anchor[:, 1], key_length=4)
+                print(Anchor_key)
 
-            keys.append(''.join(map(str, Anchor_key)))
-            magnitude.append(mag_toa_real_imag_angle_Anchor[0][0])
+                keys.append(''.join(map(str, Anchor_key)))
+                magnitude.append(mag_toa_real_imag_angle_Anchor[0][0])
 
-
-
-        if len(keys) == number and len(keys) == number * 2 + 1:
+        if len(keys) == counter * 3 + 1:
+            print(len(keys))
             keys.pop(0)
             magnitude.pop(0)
             break
 
+    keys = np.reshape(keys, (counter, 3))
+    magnitude = np.reshape(magnitude, (counter, 3))
 
+    keysFrame = pd.DataFrame(keys, columns=keyfile_col)
+    magnitudeFrame = pd.DataFrame(magnitude, columns=ampfile_col)
 
+    keysFrame.to_csv('keys.csv')
+    magnitudeFrame.to_csv('mags.csv')
 
-        keys = np.reshape(keys, (number, 3))
-        magnitude = np.reshape(keys, (number, 3))
-
-        keysFrame = pd.DataFrame(keys, columns=keyfile_col)
-        magnitudeFrame = pd.DataFrame(keys, columns=ampfile_col)
-
-        keysFrame.to_csv('keys.csv')
-        magnitudeFrame.to_csv('mags.csv')
+    exit(0)
